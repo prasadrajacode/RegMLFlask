@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Linear Regression Predictor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('https://picsum.photos/1920/1080'); /* Replace with the URL of your online image */
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            margin: 0;
+            padding: 0;
+        }
+        h2 {
+            text-align: center;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #predicted-salary {
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+   <h2>Linear Regression Predictor</h2>
+    <div class="container">
+        <label for="test-score">Test Score:</label>
+        <input type="number" id="test-score">
+
+        <label for="interview-score">Interview Score:</label>
+        <input type="number" id="interview-score">
+
+        <label for="experience">Experience (in years):</label>
+        <input type="number" id="experience">
+
+        <button onclick="predictSalary()">Predict Salary</button>
+
+        <div id="predicted-salary"></div>
+    </div>
+
+   <script>
+    function predictSalary() {
+        const testScore = parseFloat(document.getElementById('test-score').value);
+        const interviewScore = parseFloat(document.getElementById('interview-score').value);
+        const experience = parseFloat(document.getElementById('experience').value);
+
+        // Make a POST request to the Flask API
+        fetch('http://127.0.0.1:5000/predict', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ "Test Score": testScore, "Interview Score": interviewScore,"Experience": experience })
+        })
+        .then(response => response.json())
+        .then(data => {
+            const predictedSalary = data.prediction; // Corrected the key to match Flask response
+            document.getElementById('predicted-salary').innerText = `Predicted Salary: $${predictedSalary.toFixed(2)}`;
+        })
+        .catch(error => console.error('Error:', error));
+    }
+</script>
+
+</body>
+</html>
